@@ -9,7 +9,7 @@ export default function Order() {
         Authorization:sessionStorage.getItem('jwt')
     }
    var apicall=()=>{
-    axios.post("http://localhost:3000/add-order",obj1,{headers}).then((res)=>{
+    axios.post("https://voosh-0027.onrender.com/add-order",obj1,{headers}).then((res)=>{
       alert(res.data.message)
     }).catch(err=>{
         console.log(err);

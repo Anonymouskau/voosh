@@ -7,8 +7,10 @@ export default function Homepage() {
 
 var nav=useNavigate()
 const ApiCall=()=>{
-  axios.post("http://localhost:3000/add-user",obj).then((res)=>{
-    alert(`Welcome user ${res.data} Now Sign In`)
+  axios.post("https://voosh-0027.onrender.com/add-user",obj).then((res)=>{
+    
+  
+  alert(`Welcome user  Now Sign In`)
   
   }).catch((err)=>{
     console.log(err);
@@ -16,7 +18,7 @@ const ApiCall=()=>{
 }
 
 const ApiCall2=()=>{
-  axios.post("http://localhost:3000/login-user",obj).then(res=>{
+  axios.post("https://voosh-0027.onrender.com/login-user",obj).then(res=>{
    sessionStorage.setItem("jwt",res.data)
    sessionStorage.setItem("phoneNumber",obj.phoneNumber)
    alert("Welcome to Add-Order")

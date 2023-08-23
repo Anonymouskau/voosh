@@ -11,7 +11,7 @@ export default function GetItem() {
         Authorization:sessionStorage.getItem('jwt')
     }
    const api=()=>{
-      axios.get('http://localhost:3000/get-order',{headers}).then((res)=>{
+      axios.get('https://voosh-0027.onrender.com/get-order',{headers}).then((res)=>{
            setarr(res.data.orders)
       }).catch((err)=>{console.log(err);})
    }
