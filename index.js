@@ -4,10 +4,13 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { error, log } from 'console';
+import cors from 'cors'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY ='@svt#4mx&5ccd81961#chu';
+
+
 
 // Set up MongoDB connection
 mongoose.connect('mongodb+srv://kaustubhpatil418:3sEvtWA8iFMqIPr9@cluster0.yb4ivsn.mongodb.net/?retryWrites=true&w=majority', {
@@ -17,10 +20,11 @@ mongoose.connect('mongodb+srv://kaustubhpatil418:3sEvtWA8iFMqIPr9@cluster0.yb4iv
 
 // Define MongoDB models
 const User = mongoose.model('User', {
-  name: String,
+  username: String,
   phoneNumber: String,
   password: String,
 });
+
 
 const Order = mongoose.model('Order', {
   user: {type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -30,24 +34,19 @@ const Order = mongoose.model('Order', {
 
 app.use(bodyParser.json());
 
-
+app.use(cors('*'))
 function authenticateToken(req, res, next) {
   const token = req.headers['authorization'];
   console.log(token)
   if (token == null) return res.sendStatus(401);
     try{
 
-        jwt.verify(token,SECRET_KEY,{algorithms:['HS256']},(err, user) => {
-          if(err)
-          {
-            console.log(err);
-            return res.sendStatus(403) 
-          }else{
-
-              req.user = user;
-              next();
-          }
-        })}catch(err){
+     const verified= jwt.verify(token,SECRET_KEY)
+      
+     console.log(verified);
+     req.user=verified.userId
+     next();
+      }catch(err){
              console.log(err);
     }
   
@@ -55,11 +54,11 @@ function authenticateToken(req, res, next) {
 
 // User registration
 app.post('/add-user', async (req, res) => {
-  const { name, phoneNumber, password } = req.body;
+  const { username, phoneNumber, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = new User({
-    name,
+    username,
     phoneNumber,
     password: hashedPassword,
   });
@@ -79,7 +78,7 @@ app.post('/login-user', async (req, res) => {
   if (!isPasswordValid)
     return res.status(401).json({ message: 'Invalid credentials' });
 
-  const token = jwt.sign({userId:user._id},SECRET_KEY,{expiresIn:"100000s",algorithm:"HS256"});
+  const token = jwt.sign({userId:user._id},SECRET_KEY);
   res.json(token);
 });
 
